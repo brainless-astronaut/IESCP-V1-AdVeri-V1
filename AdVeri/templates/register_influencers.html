@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
+        <title>Influencers Registration</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Eagle+Lake&family=Work+Sans:wght@400;700&display=swap');
+            :root {
+                --rich-black: #010b13ff;
+                --oxford-blue: #002147ff;
+                --rusty-red: #da2c43ff;
+                --antiflash-white: #f2f3f4ff;
+                --ut-orange: #ff8200ff;
+                --dartmouth-green: #00693eff;
+            }
+            body {
+                font-family: 'Work Sans', sans-serif;
+                color: var(--rich-black);
+                background-color: var(--oxford-blue);
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+            }
+            .register-container {
+                background-color: var(--antiflash-white);
+                color: var(--rich-black);
+                padding: 20px;
+                border-radius: 10px;
+                width: 400px;
+                height: 700px;
+                flex-direction: column;
+            }
+            .register-container h1 {
+                margin-bottom: 20px;
+            }
+            .register-container label {
+                display: block;
+                margin-top: 10px;
+                text-align: justify;
+            }
+            .register-container input,
+            .register-container select {
+                width: 380px;
+                padding: 10px;
+                margin-top: 5px;
+                margin-bottom: 10px;
+                border: 1px solid var(--rich-black);
+                border-radius: 5px;
+            }
+            .register-container button {
+                background-color: var(--dartmouth-green);
+                color: var(--antiflash-white);
+                font-family: 'Work Sans', sans-serif;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                align-self: center;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            .register-container button:hover {
+                background-color: var(--ut-orange);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="register-container">
+            <h1>Influencers Registration</h1>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="message">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            <form action="{{ url_for('register_influencers') }}" method="post">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                <br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <br>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                <br>
+                <label for="industry">Category:</label>
+                <select name="category" aria-placeholder="Select Category" required>
+                    <option value="">Select Category</option>
+                    <option value="entertainment">Entertainment (Music, Art, Dance, Acting)</option>
+                    <option value="fashion & beauty">Fashion & Beauty</option>
+                    <option value="tech">Tech</option>
+                    <option value="food/beverage">Food/Beverages</option>
+                    <option value="travel/tourism">Travel/Tourism</option>
+                    <option value="fitness">Fitness</option>
+                    <option value="gaming">Gaming</option>
+                    <option value="other">Other</option>
+                </select>
+                {% if request.form.get('category') == 'other' %}
+                    <input type="text" name="category_other" placeholder="Specify your category" required>
+                {% endif %}
+                <br>
+                <label for="category">Niche:</label>
+                <input type="text" id="niche" name="niche" placeholder="Enter your niche" required>
+                <br>
+                <label for="platform">Platform:</label>
+                <select name="platform" aria-placeholder="Select Platform" required>
+                    <option value="">Select Platform</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="facebook">FaceBook</option>
+                    <option value="other">Other</option>
+                </select>
+                {% if request.form.get('platform') == 'other' %}
+                    <input type="text" name="platform_other" placeholder="Specify your platform" required>
+                {% endif %}
+                <label for="reach">Reach:</label>
+                <input type="number" id="reach" name="reach" placeholder="Enter your reach/number of followers" required>
+                <br>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </body>
+</html>

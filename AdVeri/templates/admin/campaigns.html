@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Admin | Manage Campaigns</title>
+</head>
+<body>
+    <header>
+        <h1>Manage Campaigns</h1>
+        <nav>
+            <a href="{{ url_for('admin_dashboard') }}">Home</a> |
+            <a href="{{ url_for('admin_campaigns') }}">Manage Campaigns</a> |
+            <a href="{{ url_for('admin_users') }}">Manage Users</a> |
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div class="messages">
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    <div class="container">
+        <h1>Manage Campaigns</h1>
+        <div class="row">
+            <h2>Unflagged Campaigns</h2>
+            <form method="GET" action="{{ url_for('admin_campaigns') }}">
+                <input type="text" name="search" placeholder="Search by title or description" value="{{ request.args.get('search', '') }}">
+                <button type="submit" class="btn btn-search">Search</button>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campaign ID</th>
+                        <th>Campaign Name</th>
+                        <th>Campaign Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for campaign in campaigns %}
+                    <tr>
+                        <td>{{ campaign.id }}</td>
+                        <td>{{ campaign.name }}</td>
+                        <td>{{ campaign.description }}</td>
+                        <td>
+                            <form method="POST" style="display: inline;">
+                                <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+                                <input type="hidden" name="action" value="flag">
+                                <input type="text" name="reason" placeholder="Reason" required>
+                                <button type="submit" class="btn btn-flag">Flag</button>
+                            </form>
+                            <details>
+                                <summary class="btn btn-view">View</summary>
+                                <p><strong>Name:</strong> {{ campaign.name }}</p>
+                                <p><strong>Description:</strong> {{ campaign.description }}</p>
+                                <p><strong>Start Date:</strong> {{ campaign.start_date }}</p>
+                                <p><strong>End Date:</strong> {{ campaign.end_date }}</p>
+                                <p><strong>Budget:</strong> {{ campaign.budget }}</p>
+                                <p><strong>Goals:</strong> {{ campaign.goals }}</p>
+                            </details>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h2>Flagged Campaigns</h2>
+            {% if flagged_campaigns %}
+                {% for flagged_campaign in flagged_campaigns %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campaign ID</th>
+                            <th>Campaign Name</th>
+                            <th>Campaign Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ flagged_campaign.campaign.id }}</td>
+                            <td>{{ flagged_campaign.campaign.name }}</td>
+                            <td>{{ flagged_campaign.campaign.description }}</td>
+                            <td>
+                                <form method="POST" style="display: inline;">
+                                    <input type="hidden" name="campaign_id" value="{{ flagged_campaign.campaign.id }}">
+                                    <input type="hidden" name="action" value="unflag">
+                                    <button type="submit" class="btn btn-unflag">Unflag</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                </table>
+                {% endfor %}
+            {% else %}
+            <p>No flagged campaigns found.</p>
+            {% endif %}
+        </div>
+    </div>
+    <footer>
+        Thank you for using AdVeri! <br>
+        If you have any issues, please contact us at ssahana1608@gmail.com <br>
+        &copy; 2024 AdVeri. All rights reserved.
+    </footer>
+</body>
+</html>

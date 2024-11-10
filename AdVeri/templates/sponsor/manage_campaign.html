@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Sponsor | Manage Campaigns</title>
+</head>
+<body>
+    <header>
+        <h1>Sponsor | Manage Campaigns</h1>
+        <a href="{{ url_for('sponsor_dashboard')}}">Dashboard</a> |
+        <a href="{{ url_for('sponsor_edit_profile') }}">Edit Profile</a> |
+        <a href="{{ url_for('sponsor_create_campaign')}}">Create Campaign</a> |
+        <a href="{{ url_for('sponsor_manage_campaigns') }}">Manage Campaigns</a> |
+        <a href="{{ url_for('sponsor_send_request')}}">Send Requests</a> |
+        <a href="{{ url_for('sponsor_manage_requests') }}">Manage Requests</a> |
+        <a href="{{ url_for('logout')}}">Logout</a> 
+    </header>
+    <div class="container">
+        <h2>Manage Your Campaigns</h2>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <div class="messages">
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+        {% if campaigns %}
+        {% for detail in campaigns %}
+        <form method="GET" action="{{ url_for('sponsor_manage_campaigns') }}">
+            <input type="text" name="search" placeholder="Search by name or description" value="{{ request.args.get('search', '') }}">
+            <button type="submit" class="btn btn-search">Search</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Progress</th>
+                    <th>Joined Influencers</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ detail.campaign.id }}</td>
+                    <td>{{ detail.campaign.name }}</td>
+                    <td>{{ detail.campaign.description }}</td>
+                    <td>
+                        {% if detail.progress is string %}
+                        {{ detail.progress }}
+                    {% else %}
+                        {{ detail.progress }}%
+                    {% endif %}
+                </td>
+                    <td>
+                        {% for influencer in detail.joined_influencers %}
+                            {{ influencer }}<br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="#viewModal{{ detail.campaign.id }}" class="btn btn-view">View</a>
+                        <a href="#editModal{{ detail.campaign.id }}" class="btn btn-edit">Edit</a>
+                        <form method="POST" action="{{ url_for('sponsor_delete_campaign') }}" style="display:inline;">
+                            <input type="hidden" name="campaign_id" value="{{ detail.campaign.id }}">
+                            <button type="submit" class="btn btn-delete">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            
+                <!-- View Modal -->
+                <div id="viewModal{{ detail.campaign.id }}" class="modal">
+                    <div class="modal-content">
+                        <h2 class="modal-title">View Campaign</h2>
+                        <p><strong>Name:</strong> {{ detail.campaign.name }}</p>
+                        <p><strong>Description:</strong> {{ detail.campaign.description }}</p>
+                        <p><strong>Start Date:</strong> {{ detail.campaign.start_date }}</p>
+                        <p><strong>End Date:</strong> {{ detail.campaign.end_date }}</p>
+                        <p><strong>Budget:</strong> {{ detail.campaign.budget }}</p>
+                        <p><strong>Visibility:</strong> {{ detail.campaign.visibility }}</p>
+                        <p><strong>Goals:</strong> {{ detail.campaign.goals }}</p>
+                        <a href="#" class="btn btn-close">Close</a>
+                    </div>
+                </div>
+            
+                <!-- Edit Modal -->
+                <div id="editModal{{ detail.campaign.id }}" class="modal">
+                    <div class="modal-content">
+                        <h2 class="modal-title">Edit Campaign</h2>
+                        <form method="POST" action="{{ url_for('sponsor_edit_campaign') }}">
+                            <input type="hidden" name="campaign_id" value="{{ detail.campaign.id }}">
+                            <div class="form-group">
+                                <label for="edit-campaign-name">Name</label>
+                                <input type="text" class="form-control" id="edit-campaign-name" name="name" value="{{ detail.campaign.name }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-campaign-description">Description</label>
+                                <textarea class="form-control" id="edit-campaign-description" name="description" required>{{ detail.campaign.description }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-campaign-budget">Budget</label>
+                                <input type="number" class="form-control" id="edit-campaign-budget" name="budget" value="{{ detail.campaign.budget }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-campaign-visibility">Visibility</label>
+                                <select class="form-control" id="edit-campaign-visibility" name="visibility" required>
+                                    <option value="Public" {% if detail.campaign.visibility == 'Public' %}selected{% endif %}>Public</option>
+                                    <option value="Private" {% if detail.campaign.visibility == 'Private' %}selected{% endif %}>Private</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-campaign-goals">Goals</label>
+                                <textarea class="form-control" id="edit-campaign-goals" name="goals" required>{{ detail.campaign.goals }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-save">Save Changes</button>
+                        </form>
+                        <a href="#" class="btn btn-close">Close</a>
+                    </div>
+                </div>
+            </tbody>            
+        </table>
+        {% endfor %}
+        {% else %}
+        <p>Create campaigns to manage them.</p>
+        {% endif %}
+    </div>
+    <footer>
+        Thank you for using AdVeri! <br>
+        If you have any issues, please contact us at ssahana1608@gmail.com <br>
+        &copy; 2024 AdVeri. All rights reserved.
+    </footer>
+</body>
+</html>

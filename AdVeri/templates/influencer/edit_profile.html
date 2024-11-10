@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <header>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <title>Influencer | Edit Profile</title>
+    </header>
+    <body>
+        <header>
+            <h1>Influencer | Edit Profile</h1>
+            <a href="{{ url_for('influencer_dashboard') }}">Dashboard</a> |
+            <a href="{{ url_for('influencer_edit_profile') }}">Edit Profile</a> |
+            <a href="{{ url_for('influencer_view_campaigns')}}">View Campaigns</a> |
+            <a href="{{ url_for('influencer_manage_ad_requests') }}">View Ad Requests</a> |
+            <a href="{{ url_for('influencer_search_campaigns') }}">Search Campaigns</a> |
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </header>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <div class="messages">
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+        <div class="container"></div>
+            <h1>Profile Details</h1>
+            <form action="{{ url_for('influencer_edit_profile') }}" method="post">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name ="username" value="{{ user.username }}"  readonly>
+                <br> 
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="{{ user.password }}" required>
+                <br>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{ influencer.name }}" required>
+                <br>
+                <label for="industry">Category:</label>
+                <select name="category" value="{{ influencer.category }}" required>
+                    <option selected>Select Category</option>
+                    <option value="entertainment">Entertainment (Music, Art, Dance, Acting)</option>
+                    <option value="fashion & beauty">Fashion & Beauty</option>
+                    <option value="tech">Tech</option>
+                    <option value="food/beverage">Food/Beverages</option>
+                    <option value="travel/tourism">Travel/Tourism</option>
+                    <option value="fitness">Fitness</option>
+                    <option value="gaming">Gaming</option>
+                    <option value="other">Other</option>
+                </select>
+                {% if request.form.get('category') == 'other' %}
+                    <input type="text" name="category_other" placeholder="Specify your category" required>
+                {% endif %}
+                <br>
+                <label for="category">Niche:</label>
+                <input type="text" id="niche" name="niche" value="{{ influencer.niche }}" required>
+                <br>
+                <label for="platform">Platform:</label>
+                <select name="platform" value="{{ influencer.platform }}" required>
+                    <option value="">Select Platform</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="facebook">FaceBook</option>
+                    <option value="other">Other</option>
+                </select>
+                {% if request.form.get('platform') == 'other' %}
+                    <input type="text" name="platform_other" placeholder="Specify your platform" required>
+                {% endif %}
+                <label for="reach">Reach:</label>
+                <input type="number" id="reach" name="reach" value="{{ influencer.reach }}" required>
+                <br>
+                <button class = "btn btn-save">Save Changes</button>
+            </form>
+        </div>
+        <footer>
+            Thank you for using AdVeri! <br>
+            If you have any issues, please contact us at ssahana1608@gmail.com <br>
+            &copy; 2024 AdVeri. All rights reserved.
+        </footer>
+    </body>
+</html>
+
