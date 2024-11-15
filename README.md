@@ -37,13 +37,16 @@ b. You can switch to WSL:
       Type in the command:
         wsl --install
 
-      This should install WSL into your system with Default Ubuntu Distro.
-  
-      Incase, you want a specific distro then type in:
-        wsl --instal -d DIST 
+      Type in wsl into the terminal -- this would tell you that there is no distributions installed followed by two commands.
 
-      Wherein, DIST is is the name of the DIST you wish to install.
+        wsl.exe --list --online ( this one lists all available distributions)
 
+        wsl.exe --install <Distro> (<Distro> is the distribution's name that you wish to install)
+
+      I am using Ubuntu 22.04 LTS, so I would use this command.
+        
+        wsl.exe --install Ubuntu 22.04
+ 
   WSL installation isn't needed if you are already using WSL/Linux/MAC
 
   The following commands is the one for running the project for all WSL, Linux, and MAC.
